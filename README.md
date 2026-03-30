@@ -14,6 +14,11 @@
   - [/Users/lvxue/work/策略实验室](/Users/lvxue/work/策略实验室)
 - 这个仓库只放 **脚本、配置、研究文档**，不放任何行情数据、导出结果、回测结果和缓存。
 
+如果你是在新电脑或新 AI 环境里第一次接这个项目，建议优先再读：
+
+- [CURRENT_STATE.md](/Users/lvxue/work/量化/CURRENT_STATE.md)
+- [MAC_MINI_SETUP.md](/Users/lvxue/work/量化/MAC_MINI_SETUP.md)
+
 ## 仓库不包含什么
 
 以下内容一律不进仓库：
