@@ -1,0 +1,18 @@
+{
+  "limitup_l1l2": {
+    "_research_filters": {
+      "cache_version": 2,
+      "enabled": true,
+      "exclude_st": true,
+      "exclude_delisting": true,
+      "exclude_bj": true,
+      "exclude_kcb": false,
+      "min_listed_trade_days": 120,
+      "min_close": 3.0,
+      "min_avg_amount_20": 100000.0
+    },
+    "_research_limitup_tuning": {
+      "enabled": false
+    }
+  }
+}

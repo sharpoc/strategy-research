@@ -1,0 +1,31 @@
+{
+  "real_breakout": {
+    "_research_filters": {
+      "enabled": true,
+      "exclude_st": true,
+      "exclude_delisting": true,
+      "exclude_bj": true,
+      "exclude_kcb": true,
+      "min_listed_trade_days": 120,
+      "min_close": 5.0,
+      "min_avg_amount_20": 150000.0
+    },
+    "pre_runup_min_pct": 12.0,
+    "platform_min_bars": 5,
+    "platform_max_bars": 14,
+    "platform_amp_max_pct": 12.0,
+    "platform_close_span_max_pct": 7.5,
+    "platform_std_max_pct": 3.8,
+    "platform_single_bar_max_pct": 6.5,
+    "platform_abnormal_bar_max": 1,
+    "platform_shrink_vol_ratio_max": 0.82,
+    "platform_tail_shrink_ratio_max": 0.95,
+    "breakout_close_buffer_pct": 1.2,
+    "breakout_volume_ratio_min": 1.35,
+    "breakout_amount_ratio_min": 1.1,
+    "breakout_body_pct_min": 1.4,
+    "breakout_upper_shadow_pct_max": 2.0,
+    "support_hold_break_pct": 1.8,
+    "candidate_score_threshold": 60.0
+  }
+}

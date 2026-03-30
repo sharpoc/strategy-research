@@ -1,0 +1,21 @@
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local runtime and notebook caches
+.pycache/
+Library/
+
+# Runtime exports and market data
+output/
+
+# Logs and temp
+*.log
+*.tmp
+
+# Loose local scratch files
+tk.csv

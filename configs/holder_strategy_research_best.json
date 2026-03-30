@@ -1,0 +1,11 @@
+{
+  "min_volume_ratio": 1.1,
+  "max_price_position": 0.5,
+  "max_industry_pb_pct": 0.75,
+  "min_final_score": 60.0,
+  "min_aggressive_score": 52.0,
+  "top_n_stage1": 10,
+  "top_n_final": 5,
+  "top_n_aggressive": 3,
+  "enable_stage2_cyq": true
+}

@@ -1,0 +1,73 @@
+{
+  "limitup_l1l2": {
+    "_research_filters": {
+      "cache_version": 2,
+      "enabled": true,
+      "exclude_st": true,
+      "exclude_delisting": true,
+      "exclude_bj": true,
+      "exclude_kcb": false,
+      "min_listed_trade_days": 120,
+      "min_close": 3.0,
+      "min_avg_amount_20": 100000.0
+    },
+    "_research_limitup_tuning": {
+      "enabled": false,
+      "max_bars_since_limit": 50,
+      "max_bars_lu_to_l1": 20,
+      "min_bars_l1_to_l2": 4,
+      "max_bars_l1_to_l2": 24,
+      "min_impulse_pct": 8.0,
+      "max_pullback_pct": 10.5,
+      "min_l2_above_l1_pct": 2.0,
+      "max_l2_above_l1_pct": 7.5,
+      "min_hold_buffer_pct": 0.8,
+      "max_close_vs_l2_pct": 6.0,
+      "require_trend_ok": true,
+      "require_volume_ok": true,
+      "range_regime_bonus": 6.0,
+      "uptrend_penalty": -6.0,
+      "downtrend_penalty": -10.0
+    },
+    "_research_entry_gate": {
+      "enabled": true,
+      "allowed_market_regimes": [
+        "震荡趋势"
+      ],
+      "min_impulse_pct": 6.0,
+      "max_pullback_pct": 7.0,
+      "min_l2_above_l1_pct": 1.2,
+      "max_l2_above_l1_pct": 7.0,
+      "min_hold_buffer_pct": 1.0,
+      "max_bars_lu_to_l1": 40,
+      "max_bars_l1_to_l2": 24,
+      "require_trend_ok": true
+    }
+  },
+  "platform_breakout": {
+    "_research_filters": {
+      "cache_version": 2,
+      "enabled": true,
+      "exclude_st": true,
+      "exclude_delisting": true,
+      "exclude_bj": true,
+      "exclude_kcb": true,
+      "min_listed_trade_days": 120,
+      "min_close": 3.0,
+      "min_avg_amount_20": 100000.0
+    }
+  },
+  "double_bottom": {
+    "_research_filters": {
+      "cache_version": 2,
+      "enabled": true,
+      "exclude_st": true,
+      "exclude_delisting": true,
+      "exclude_bj": true,
+      "exclude_kcb": true,
+      "min_listed_trade_days": 120,
+      "min_close": 3.0,
+      "min_avg_amount_20": 100000.0
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "common": {
+    "intraday_conflict_mode": "conservative"
+  },
+  "limitup_l1l2": {
+    "breakeven_buffer_pct": 0.5,
+    "breakeven_trigger_pct": 9.0,
+    "max_hold_days": 15,
+    "min_target_pct": 8.0,
+    "stop_below_l2_pct": 0.8,
+    "target_from_impulse_multiple": 0.8,
+    "trail_arm_pct": 9.0,
+    "trail_from_peak_pct": 6.5,
+    "trend_exit_arm_pct": 8.5,
+    "trend_exit_min_hold_days": 5
+  },
+  "real_breakout": {
+    "breakeven_buffer_pct": 1.0,
+    "breakeven_trigger_pct": 8.0,
+    "max_hold_days": 12,
+    "min_target_pct": 8.0,
+    "stop_below_support_pct": 2.5,
+    "target_from_pattern_multiple": 1.2,
+    "trail_arm_pct": 12.5,
+    "trail_from_peak_pct": 4.0,
+    "trend_exit_arm_pct": 6.0,
+    "trend_exit_min_hold_days": 4
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "limitup_l1l2": {
+    "_research_entry_gate": {
+      "enabled": true,
+      "allowed_market_regimes": [
+        "震荡趋势"
+      ],
+      "min_impulse_pct": 6.0,
+      "max_pullback_pct": 7.0,
+      "min_l2_above_l1_pct": 1.2,
+      "max_l2_above_l1_pct": 7.0,
+      "min_hold_buffer_pct": 1.0,
+      "max_bars_lu_to_l1": 40,
+      "max_bars_l1_to_l2": 24,
+      "require_trend_ok": true
+    }
+  }
+}

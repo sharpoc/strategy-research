@@ -1,0 +1,5 @@
+{
+  "common": {
+    "intraday_conflict_mode": "target_first"
+  }
+}

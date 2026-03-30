@@ -1,0 +1,17 @@
+{
+  "common": {
+    "intraday_conflict_mode": "conservative"
+  },
+  "real_breakout": {
+    "breakeven_buffer_pct": 1.0,
+    "breakeven_trigger_pct": 8.0,
+    "max_hold_days": 12,
+    "min_target_pct": 8.0,
+    "stop_below_support_pct": 2.5,
+    "target_from_pattern_multiple": 1.2,
+    "trail_arm_pct": 12.5,
+    "trail_from_peak_pct": 4.0,
+    "trend_exit_arm_pct": 6.0,
+    "trend_exit_min_hold_days": 4
+  }
+}
