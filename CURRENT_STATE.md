@@ -1,6 +1,6 @@
 # 当前状态
 
-最后更新：`2026-03-30`
+最后更新：`2026-04-01`
 
 ## 仓库角色
 
@@ -28,6 +28,15 @@
   - 最近结论是：
     - `stage1` 候选池有价值
     - `final` 更适合作为轻确认 + 去重
+    - 最新 6 个月轻确认对拍里：
+      - `final` 真信号 `4` 次
+      - `5日均值 +9.61%`
+      - `10日均值 +5.3594%`
+    - 当前最值得继续研究的是：
+      - 为什么 `10日` 仍弱于 `stage1`
+      - 怎样继续优化轻确认 `final`
+  - Mac mini 交接文档：
+    - [/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
 
 ## 当前执行层结论
 

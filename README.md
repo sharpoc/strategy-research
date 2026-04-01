@@ -18,6 +18,7 @@
 
 - [CURRENT_STATE.md](/Users/lvxue/work/量化/CURRENT_STATE.md)
 - [MAC_MINI_SETUP.md](/Users/lvxue/work/量化/MAC_MINI_SETUP.md)
+- [docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
 
 ## 仓库不包含什么
 
@@ -183,6 +184,7 @@
 - runner: [run_tushare_core_management_accumulation_strategy.py](/Users/lvxue/work/量化/scripts/run_tushare_core_management_accumulation_strategy.py)
 - 策略模块: [core_management_accumulation_strategy.py](/Users/lvxue/work/量化/scripts/core_management_accumulation_strategy.py)
 - 6个月 `final` 轻确认对拍: [run_core_management_final_review.py](/Users/lvxue/work/量化/scripts/run_core_management_final_review.py)
+- Mac mini 交接文档: [CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
 - 类型：事件驱动策略
 - 当前状态：仅本地研究，尚未接入网页、测试环境和线上调度
 - 核心逻辑：
@@ -199,6 +201,12 @@
   - 当前优化方向已经从“继续压严 final”切到“`stage1` 作为候选池，`final` 做轻确认 + 去重”
   - 当前已确认：最近 6 个月 `stage1` 的 5/10 日表现强于旧版 `final`，所以后续优先优化最终排序，而不是放宽事件入口
   - `run_core_management_final_review.py` 会直接复用现有 6 个月统计里的候选交易日，按日期重建新版 `final`，并输出 `optimized_final_signals.csv / review_summary.json / review_report.md`
+  - 当前最新轻确认对拍结果：
+    - 新版 `final` 真信号 `4` 次
+    - `5日均值 +9.61%`
+    - `10日均值 +5.3594%`
+    - 重复信号痕迹 `0`
+  - 当前下一步不是放宽入口，而是继续优化 `final` 的中期表现
 
 ## 独立研究框架
 

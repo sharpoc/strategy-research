@@ -64,6 +64,25 @@ git clone git@github.com:sharpoc/strategy-lab.git
 7. 先跑单日 runner 验证
 8. 再考虑正式接管定时任务
 
+## 当前建议优先接手的研究任务
+
+如果 `Mac mini` 先接“当前最值的研究”，建议优先是：
+
+1. `核心高管连增臻选`
+2. 继续优化它的 `final` 轻确认层
+3. 不动 `stage1` 入口，不急着接网页和线上
+
+对应交接文档：
+
+- [/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
+
+建议先在 `Mac mini` 上验证两条命令：
+
+```bash
+python3 /Users/lvxue/work/量化/scripts/run_tushare_core_management_accumulation_strategy.py --end-date 20260320
+python3 /Users/lvxue/work/量化/scripts/run_core_management_final_review.py --stats-json /tmp/core_management_6m_stats.json
+```
+
 ## 注意事项
 
 - 仓库只提交代码、配置、文档
