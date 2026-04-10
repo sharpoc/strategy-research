@@ -19,6 +19,7 @@
 - [CURRENT_STATE.md](/Users/lvxue/work/量化/CURRENT_STATE.md)
 - [MAC_MINI_SETUP.md](/Users/lvxue/work/量化/MAC_MINI_SETUP.md)
 - [docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
+- [docs/TUSHARE_15000_RESEARCH_PLAN.md](/Users/lvxue/work/量化/docs/TUSHARE_15000_RESEARCH_PLAN.md)
 
 ## 仓库不包含什么
 
