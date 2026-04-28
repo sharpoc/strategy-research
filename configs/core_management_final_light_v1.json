@@ -1,0 +1,6 @@
+{
+  "min_total_score": 45.0,
+  "min_final_confirmation_score": 0.8,
+  "enable_structure_score_override": true,
+  "min_structure_ok_override_score": 4.0
+}

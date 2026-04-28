@@ -1,0 +1,5 @@
+{
+  "min_wave_trade_days": 1,
+  "min_wave_total_amount": 5000000.0,
+  "min_dense_wave_total_amount": 3000000.0
+}

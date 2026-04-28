@@ -24,6 +24,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--show-top", type=int, default=5, help="How many rows to print from the stable/aggressive pools.")
     parser.add_argument("--config-file", default="", help="Optional JSON file with HolderStrategyConfig override keys.")
     parser.add_argument("--config-json", default="", help="Optional inline JSON object with HolderStrategyConfig override keys.")
+    parser.add_argument("--export-root", default="", help="Optional base directory for strategy exports.")
+    parser.add_argument("--export-prefix", default="holder_increase_screen_", help="Export directory prefix for this strategy variant.")
     parser.add_argument("--resume-existing", action="store_true", help="Resume from partial export files for the same trade date.")
     parser.add_argument("--require-complete", action="store_true", help="Fail instead of exporting a partial result.")
     return parser.parse_args()
@@ -75,6 +77,8 @@ def main() -> None:
         pro=pro,
         custom_http_url=custom_http_url,
         export_results=True,
+        export_root=Path(args.export_root).expanduser().resolve() if args.export_root.strip() else None,
+        export_prefix=args.export_prefix,
         resume_existing=args.resume_existing,
         require_complete=args.require_complete,
     )

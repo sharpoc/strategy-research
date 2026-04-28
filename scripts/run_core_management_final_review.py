@@ -137,6 +137,13 @@ def parse_hold_days(raw: str) -> list[int]:
 
 
 def build_candidate_dates(stats_payload: dict[str, Any], max_dates: int = 0) -> list[str]:
+    explicit_dates = stats_payload.get("candidate_trade_days", [])
+    if isinstance(explicit_dates, list) and explicit_dates:
+        dates = [str(value) for value in explicit_dates if len(str(value)) == 8 and str(value).isdigit()]
+        dates = sorted(dict.fromkeys(dates))
+        if max_dates > 0:
+            dates = dates[:max_dates]
+        return dates
     progress_rows = stats_payload.get("progress", [])
     dates: list[str] = []
     for row in progress_rows:
@@ -416,7 +423,11 @@ def summarize_returns(label: str, df: pd.DataFrame, hold_days: list[int]) -> dic
         summary["last_signal_date"] = dates.max() if not dates.empty else None
     for day in hold_days:
         column = f"return_open_to_close_{day}d_pct"
-        values = pd.to_numeric(df.get(column), errors="coerce").dropna()
+        if column in df.columns:
+            raw_values = df[column]
+        else:
+            raw_values = pd.Series(dtype=float)
+        values = pd.to_numeric(raw_values, errors="coerce").dropna()
         summary[f"avg_{day}d_pct"] = round(float(values.mean()), 4) if not values.empty else None
         summary[f"median_{day}d_pct"] = round(float(values.median()), 4) if not values.empty else None
         summary[f"win_rate_{day}d_pct"] = round(float((values > 0).mean() * 100.0), 2) if not values.empty else None
@@ -468,6 +479,7 @@ def build_review_report(
     lines.append(f"- 候选交易日：`{baseline_stats.get('candidate_trade_day_count')}`")
     lines.append(f"- 新版 final 真信号：`{optimized_final_summary.get('rows', 0)}`")
     lines.append(f"- 基线 stage1 样本：`{stage1_summary.get('rows', 0)}`")
+    lines.append(f"- 基线 stage1 唯一股票：`{baseline_stats.get('stage1_unique_stock_count', 0)}`")
     lines.append("")
     lines.append("## 绩效总表")
     header = "| 口径 | 样本数 | 3日均值 | 5日均值 | 10日均值 | 3日胜率 | 5日胜率 | 10日胜率 |"
@@ -483,6 +495,20 @@ def build_review_report(
         f"{stage1_summary.get('avg_3d_pct')} | {stage1_summary.get('avg_5d_pct')} | {stage1_summary.get('avg_10d_pct')} | "
         f"{stage1_summary.get('win_rate_3d_pct')}% | {stage1_summary.get('win_rate_5d_pct')}% | {stage1_summary.get('win_rate_10d_pct')}% |"
     )
+    lines.append("")
+    lines.append("## Stage1 结构")
+    duplicate_payload = baseline_stats.get("stage1_ts_code_duplicates", {})
+    if duplicate_payload:
+        lines.append(
+            f"- 重复股票行数：`{duplicate_payload.get('duplicate_row_count', 0)}` / "
+            f"重复股票数：`{duplicate_payload.get('duplicate_value_count', 0)}`"
+        )
+    top_duplicates = duplicate_payload.get("top_duplicates", []) if isinstance(duplicate_payload, dict) else []
+    if top_duplicates:
+        for item in top_duplicates[:10]:
+            lines.append(f"- `{item.get('value')}` 出现 ` {item.get('count')} ` 次")
+    else:
+        lines.append("- 当前没有重复股票。")
     lines.append("")
     lines.append("## 新版 final 明细")
     if final_signals_df.empty:

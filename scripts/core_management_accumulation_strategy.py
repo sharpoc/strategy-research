@@ -51,6 +51,8 @@ class CoreManagementAccumulationConfig:
     max_fresh_wave_age_trade_days: int = 5
     min_retrigger_structure_score: float = 16.0
     min_final_confirmation_score: float = 6.0
+    enable_structure_score_override: bool = False
+    min_structure_ok_override_score: float = 0.0
     include_star: bool = False
     include_gem: bool = True
 
@@ -95,6 +97,8 @@ class CoreManagementAccumulationConfig:
             max_fresh_wave_age_trade_days=int(data.get("max_fresh_wave_age_trade_days", 5)),
             min_retrigger_structure_score=float(data.get("min_retrigger_structure_score", 16.0)),
             min_final_confirmation_score=float(data.get("min_final_confirmation_score", 6.0)),
+            enable_structure_score_override=to_bool(data.get("enable_structure_score_override", False)),
+            min_structure_ok_override_score=float(data.get("min_structure_ok_override_score", 0.0)),
             include_star=to_bool(data.get("include_star", False)),
             include_gem=to_bool(data.get("include_gem", True)),
         )
@@ -836,26 +840,32 @@ def build_final_candidate_flags(row: dict[str, Any], config: CoreManagementAccum
     avg_amount_20d_yuan = to_float(row.get("avg_amount_20d_yuan"))
     wave_age_trade_days = to_float(row.get("wave_age_trade_days"))
     final_confirmation_score = to_float(row.get("final_confirmation_score")) or 0.0
+    post_wave_structure_score = to_float(row.get("post_wave_structure_score")) or 0.0
     strong_hold = bool(
         to_bool(row.get("above_ma20"))
         and to_bool(row.get("ma10_slope_up"))
-        and (to_float(row.get("post_wave_structure_score")) or 0.0) >= config.min_retrigger_structure_score
+        and post_wave_structure_score >= config.min_retrigger_structure_score
     )
     freshness_ok = wave_age_trade_days is not None and wave_age_trade_days <= config.max_fresh_wave_age_trade_days
     if wave_age_trade_days is not None and wave_age_trade_days > config.max_fresh_wave_age_trade_days and (
         to_bool(row.get("recent_restrengthen_flag")) or strong_hold
     ):
         freshness_ok = True
+    classic_structure_ok = (
+        not to_bool(row.get("post_wave_breakdown_flag"))
+        and (
+            to_bool(row.get("recent_restrengthen_flag"))
+            or (to_bool(row.get("above_ma10")) and to_bool(row.get("ma10_slope_up")))
+        )
+    )
+    structure_override_ok = bool(
+        config.enable_structure_score_override
+        and post_wave_structure_score >= config.min_structure_ok_override_score
+    )
     base_flags.update(
         {
             "avg_amount_ok": avg_amount_20d_yuan is not None and avg_amount_20d_yuan >= config.min_avg_amount_20d_yuan,
-            "structure_ok": (
-                not to_bool(row.get("post_wave_breakdown_flag"))
-                and (
-                    to_bool(row.get("recent_restrengthen_flag"))
-                    or (to_bool(row.get("above_ma10")) and to_bool(row.get("ma10_slope_up")))
-                )
-            ),
+            "structure_ok": classic_structure_ok or structure_override_ok,
             "freshness_ok": freshness_ok,
             "repeat_ok": not to_bool(row.get("repeat_signal_blocked")),
             "confirmation_ok": final_confirmation_score >= config.min_final_confirmation_score,

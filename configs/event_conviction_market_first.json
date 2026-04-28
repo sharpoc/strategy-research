@@ -1,0 +1,46 @@
+{
+  "min_publish_score": 47.0,
+  "max_candidates": 300,
+  "event_type_weights": {
+    "management_buy": 15.0,
+    "important_shareholder_buy": 10.0,
+    "company_buyback": 13.0
+  },
+  "identity_weights": {
+    "company": 16.0,
+    "controller": 17.0,
+    "core_management": 16.0,
+    "industry_capital": 11.0,
+    "important_shareholder": 8.0,
+    "other": 3.0
+  },
+  "conviction_weights": {
+    "amount_max": 13.0,
+    "continuity_max": 7.0,
+    "density_max": 4.0,
+    "execution_max": 4.0
+  },
+  "cost_zone_weights": {
+    "tight_band": 12.0,
+    "mid_band": 9.0,
+    "wide_band": 5.0,
+    "far_penalty": 5.0
+  },
+  "structure_weights": {
+    "base": 0.9,
+    "restabilize_bonus": 3.0,
+    "breakdown_penalty": 7.0
+  },
+  "market_confirmation_weights": {
+    "main_flow_max": 8.0,
+    "margin_flow_max": 6.0,
+    "turnover_health_max": 5.0,
+    "amount_health_max": 5.0
+  },
+  "penalty_weights": {
+    "repeat_signal": 5.0,
+    "old_event": 4.0,
+    "execution_low": 3.0,
+    "extreme_distance": 5.0
+  }
+}

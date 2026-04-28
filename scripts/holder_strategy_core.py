@@ -2256,6 +2256,7 @@ def run_holder_strategy_screening(
     custom_http_url: str = "",
     export_results: bool = True,
     export_root: Optional[Path] = None,
+    export_prefix: str = "holder_increase_screen_",
     resume_existing: bool = False,
     require_complete: bool = False,
 ) -> dict[str, Any]:
@@ -2266,7 +2267,8 @@ def run_holder_strategy_screening(
 
     base_export_root = export_root if export_root is not None else output_root_dir()
     base_export_root.mkdir(parents=True, exist_ok=True)
-    export_dir = base_export_root / f"holder_increase_screen_{config.end_date}"
+    safe_export_prefix = str(export_prefix or "holder_increase_screen_").strip() or "holder_increase_screen_"
+    export_dir = base_export_root / f"{safe_export_prefix}{config.end_date}"
     progress_path = export_dir / "screen_progress.json"
     if export_results:
         export_dir.mkdir(parents=True, exist_ok=True)

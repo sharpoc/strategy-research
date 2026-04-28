@@ -37,6 +37,21 @@
       - 怎样继续优化轻确认 `final`
   - Mac mini 交接文档：
     - [/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
+- `事件信念臻选`
+  - 当前是研究中的母策略方向
+  - 目标不是只做“高管增持”
+  - 当前已落第一版研究骨架：
+    - 高管增持
+    - 重要股东增持
+    - 公司回购
+  - 当前目标：
+    - 候选尽量宽进
+    - 所有候选统一打分
+    - 每天最终只取 Top-1
+  - 设计说明：
+    - [/Users/lvxue/work/量化/docs/EVENT_CONVICTION_STRATEGY_DESIGN.md](/Users/lvxue/work/量化/docs/EVENT_CONVICTION_STRATEGY_DESIGN.md)
+  - 研究脚本：
+    - [/Users/lvxue/work/量化/scripts/run_event_conviction_top1_research.py](/Users/lvxue/work/量化/scripts/run_event_conviction_top1_research.py)
 
 ## 当前执行层结论
 

@@ -83,6 +83,41 @@ python3 /Users/lvxue/work/量化/scripts/run_tushare_core_management_accumulatio
 python3 /Users/lvxue/work/量化/scripts/run_core_management_final_review.py --stats-json /tmp/core_management_6m_stats.json
 ```
 
+## 推荐接管方式
+
+建议把 `Mac mini` 的正式链路拆成两段：
+
+1. `strategy-research` 负责定时跑重任务
+2. `strategy-lab` 负责接收结果并更新线上展示
+
+当前仓库里已经补了可直接落地的入口：
+
+- 环境变量模板：`.env.mac_mini.example`
+- 定时执行脚本：`ops/run_mac_mini_holder_pipeline.sh`
+- `launchd` 安装脚本：`ops/install_launchd_holder_pipeline.sh`
+- 盘中执行脚本：`ops/run_mac_mini_tracking_pipeline.sh`
+- 盘中 `launchd` 安装脚本：`ops/install_launchd_tracking_pipeline.sh`
+- 运行说明：`ops/runbooks/MAC_MINI_AUTOMATION.md`
+
+推荐流程：
+
+```bash
+cd /Users/eagod/ai-dev/策略实验室/strategy-research
+cp .env.mac_mini.example .env.mac_mini
+chmod +x ops/run_mac_mini_holder_pipeline.sh ops/install_launchd_holder_pipeline.sh
+./ops/run_mac_mini_holder_pipeline.sh
+./ops/install_launchd_holder_pipeline.sh
+```
+
+默认会在工作日 `21:30` 运行当日 `holder` 单日 runner，成功后如果设置了 `LAB_SYNC_SCRIPT`，会继续触发服务仓库同步钩子。
+
+盘中跟踪刷新则是另一条独立链路：
+
+- 工作日 `09:40 / 10:10 / 10:40 / 11:10 / 13:10 / 13:40 / 14:10 / 14:40 / 15:10`
+- 默认覆盖三条线上策略：`holder_increase_screening`、`holder_chip_enhanced_screening`、`event_conviction_signal`
+- `Mac mini` 先逐策略拉线上当前 `tracked_stocks`
+- 再抓实时行情，并逐策略、逐只股票调用线上接口推回展示站
+- 网页继续读线上最新价格
 ## 注意事项
 
 - 仓库只提交代码、配置、文档

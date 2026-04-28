@@ -19,6 +19,7 @@
 - [CURRENT_STATE.md](/Users/lvxue/work/量化/CURRENT_STATE.md)
 - [MAC_MINI_SETUP.md](/Users/lvxue/work/量化/MAC_MINI_SETUP.md)
 - [docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
+- [docs/EVENT_CONVICTION_STRATEGY_DESIGN.md](/Users/lvxue/work/量化/docs/EVENT_CONVICTION_STRATEGY_DESIGN.md)
 
 ## 仓库不包含什么
 
@@ -70,6 +71,36 @@
 
 - 线上不再直接承担重型研究和补数任务
 - 这个仓库会逐步成为“策略大脑”
+
+## 当前已落地的 Mac mini 入口
+
+为了让这台机器先接管定时执行，仓库内现在补了这几个入口：
+
+- `.env.mac_mini.example`
+  - `Mac mini` 环境变量模板
+- `ops/run_mac_mini_holder_pipeline.sh`
+  - 夜间单日执行入口
+  - 默认跑 `run_tushare_holder_strategy_core.py --resume-existing --require-complete`
+- `ops/install_launchd_holder_pipeline.sh`
+  - 安装工作日 `21:30` 的 `launchd` 定时任务
+- `ops/run_mac_mini_tracking_pipeline.sh`
+  - 盘中半小时跟踪刷新入口
+  - 默认覆盖三条线上策略：`holder_increase_screening`、`holder_chip_enhanced_screening`、`event_conviction_signal`
+  - 从线上拉当前 `tracked_stocks`，抓实时快照，再逐策略、逐只股票调用线上接口推回展示站
+- `ops/install_launchd_tracking_pipeline.sh`
+  - 安装工作日 `09:40 / 10:10 / 10:40 / 11:10 / 13:10 / 13:40 / 14:10 / 14:40 / 15:10` 的盘中 `launchd` 定时任务
+- `ops/runbooks/MAC_MINI_AUTOMATION.md`
+  - 手工试跑、安装定时任务、接服务仓库同步钩子的说明
+
+当前建议的接法是：
+
+- 这个仓库只负责“跑”
+- `strategy-lab` 通过 `LAB_SYNC_SCRIPT` 负责“接结果并推线上”
+
+盘中跟踪刷新现在也已经按同样思路落地：
+
+- 网页继续沿用 `strategy-lab` 现有展示逻辑
+- `Mac mini` 只负责把最新盘中价格和快照按三条策略逐只股票推上去
 
 如果后续切换到别的 AI，先读这份 README，再看具体脚本。
 
@@ -198,7 +229,27 @@
   - 当前价相对增持成本做核心评分
   - 增持后 `5~10` 日结构单独打分
   - `融资净买入 / 主力净流 / 换手健康度` 只做辅助加分，不做硬门槛
-  - 当前优化方向已经从“继续压严 final”切到“`stage1` 作为候选池，`final` 做轻确认 + 去重”
+- 当前优化方向已经从“继续压严 final”切到“`stage1` 作为候选池，`final` 做轻确认 + 去重”
+
+### 7. 事件信念臻选
+
+- 设计文档: [EVENT_CONVICTION_STRATEGY_DESIGN.md](/Users/lvxue/work/量化/docs/EVENT_CONVICTION_STRATEGY_DESIGN.md)
+- 框架骨架: [event_conviction_strategy.py](/Users/lvxue/work/量化/scripts/event_conviction_strategy.py)
+- 单日 runner: [run_tushare_event_conviction_strategy.py](/Users/lvxue/work/量化/scripts/run_tushare_event_conviction_strategy.py)
+- Top-1 研究回放: [run_event_conviction_top1_research.py](/Users/lvxue/work/量化/scripts/run_event_conviction_top1_research.py)
+- 基线配置: [event_conviction_research_baseline.json](/Users/lvxue/work/量化/configs/event_conviction_research_baseline.json)
+- 类型：多事件统一评分母策略
+- 当前状态：已落地研究骨架和单日 runner，尚未接网页与线上调度
+- 当前方向：
+  - 不只做“高管增持”
+  - 允许候选池很大，统一打分后每天只取 Top-1
+  - 当前首批事件源：
+    - `management_buy`
+    - `important_shareholder_buy`
+    - `company_buyback`
+  - 当前研究重点：
+    - 权重怎么配
+    - Top-1 是否稳定优于简单硬过滤
   - 当前已确认：最近 6 个月 `stage1` 的 5/10 日表现强于旧版 `final`，所以后续优先优化最终排序，而不是放宽事件入口
   - `run_core_management_final_review.py` 会直接复用现有 6 个月统计里的候选交易日，按日期重建新版 `final`，并输出 `optimized_final_signals.csv / review_summary.json / review_report.md`
   - 当前最新轻确认对拍结果：
