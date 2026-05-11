@@ -23,6 +23,9 @@
 
 - `星曜增持臻选`
   - 当前最接近线上主策略
+  - 后续拿到 `Tushare 15000` 积分后，优先研究“筹码确认强化版”
+  - 研究计划：
+    - [/Users/lvxue/work/量化/docs/TUSHARE_15000_RESEARCH_PLAN.md](/Users/lvxue/work/量化/docs/TUSHARE_15000_RESEARCH_PLAN.md)
 - `核心高管连增臻选`
   - 当前只在本地研究
   - 最近结论是：

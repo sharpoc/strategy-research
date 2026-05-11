@@ -68,15 +68,22 @@ git clone git@github.com:sharpoc/strategy-lab.git
 
 如果 `Mac mini` 先接“当前最值的研究”，建议优先是：
 
-1. `核心高管连增臻选`
-2. 继续优化它的 `final` 轻确认层
-3. 不动 `stage1` 入口，不急着接网页和线上
+1. `Tushare 15000` 积分接口验证与缓存层
+2. `星曜增持臻选` 筹码确认强化版
+3. `核心高管连增臻选` 继续优化 `final` 轻确认层
 
 对应交接文档：
 
+- [/Users/lvxue/work/量化/docs/TUSHARE_15000_RESEARCH_PLAN.md](/Users/lvxue/work/量化/docs/TUSHARE_15000_RESEARCH_PLAN.md)
 - [/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md](/Users/lvxue/work/量化/docs/CORE_MANAGEMENT_LIGHT_FINAL_HANDOFF.md)
 
-建议先在 `Mac mini` 上验证两条命令：
+建议先在 `Mac mini` 上按 15000 积分计划验证：
+
+- `cyq_perf`
+- `cyq_chips`
+- `stk_factor_pro`
+
+再验证核心高管连增研究命令：
 
 ```bash
 python3 /Users/lvxue/work/量化/scripts/run_tushare_core_management_accumulation_strategy.py --end-date 20260320
