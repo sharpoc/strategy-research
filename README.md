@@ -80,12 +80,24 @@
   - `Mac mini` 环境变量模板
 - `ops/run_mac_mini_holder_pipeline.sh`
   - 夜间单日执行入口
-  - 默认跑 `run_tushare_holder_strategy_core.py --resume-existing --require-complete`
+  - 默认跑 `run_tushare_financial_report_catalyst_strategy.py`，把原 `holder_increase_screening` 线上槽位替换为 `财报催化臻选`
+  - `holder_chip_enhanced_screening` 仍通过 `ops/run_mac_mini_holder_chip_pipeline.sh` 复用旧 `run_tushare_holder_strategy_core.py --resume-existing --require-complete`
 - `ops/install_launchd_holder_pipeline.sh`
   - 安装工作日 `21:30` 的 `launchd` 定时任务
+- `ops/run_mac_mini_event_conviction_pipeline.sh`
+  - 事件信念策略执行入口
+  - 默认跑 `run_tushare_event_conviction_strategy.py`，生成 `event_conviction_screen_<trade_day>` 导出后通过服务仓库同步脚本推送
+- `ops/install_launchd_event_conviction_pipeline.sh`
+  - 安装工作日 `22:45` 的事件信念 `launchd` 定时任务
+- `ops/run_mac_mini_rebound_pipeline.sh`
+  - 尾盘反抽策略执行入口
+  - 默认调用 `vendor/tushare-stock-rater` 中的 `python3 -m tushare_stock_rater pick-rebound --top 5`
+  - 读取 `summary.json` 后转换为 `strategy-lab` 导入 payload，并调用展示站内部导入接口推送
+- `ops/install_launchd_rebound_pipeline.sh`
+  - 安装工作日 `14:30` 的尾盘反抽 `launchd` 定时任务
 - `ops/run_mac_mini_tracking_pipeline.sh`
   - 盘中半小时跟踪刷新入口
-  - 默认覆盖三条线上策略：`holder_increase_screening`、`holder_chip_enhanced_screening`、`event_conviction_signal`
+  - 默认覆盖四条线上策略：`holder_increase_screening`、`holder_chip_enhanced_screening`、`event_conviction_signal`、`tail_rebound_screening`
   - 从线上拉当前 `tracked_stocks`，抓实时快照，再逐策略、逐只股票调用线上接口推回展示站
 - `ops/install_launchd_tracking_pipeline.sh`
   - 安装工作日 `09:40 / 10:10 / 10:40 / 11:10 / 13:10 / 13:40 / 14:10 / 14:40 / 15:10` 的盘中 `launchd` 定时任务
@@ -95,12 +107,14 @@
 当前建议的接法是：
 
 - 这个仓库只负责“跑”
-- `strategy-lab` 通过 `LAB_SYNC_SCRIPT` 负责“接结果并推线上”
+- 晚间策略可通过 `LAB_SYNC_SCRIPT` 接服务仓库同步钩子
+- 事件信念策略通过 `LAB_EVENT_SYNC_SCRIPT` 单独接服务仓库同步钩子
+- `tail_rebound_screening` 直接由 `ops/run_mac_mini_rebound_pipeline.py` 调用展示站 `POST /api/internal/strategies/{strategy_id}/imports` 推送
 
 盘中跟踪刷新现在也已经按同样思路落地：
 
 - 网页继续沿用 `strategy-lab` 现有展示逻辑
-- `Mac mini` 只负责把最新盘中价格和快照按三条策略逐只股票推上去
+- `Mac mini` 只负责把最新盘中价格和快照按四条策略逐只股票推上去
 
 如果后续切换到别的 AI，先读这份 README，再看具体脚本。
 
@@ -130,7 +144,20 @@
 
 ## 当前主要策略脚本
 
-### 1. 星曜增持臻选
+### 1. 财报催化臻选
+
+- runner: [run_tushare_financial_report_catalyst_strategy.py](/Users/lvxue/work/量化/scripts/run_tushare_financial_report_catalyst_strategy.py)
+- 策略模块: [financial_report_catalyst_strategy.py](/Users/lvxue/work/量化/scripts/financial_report_catalyst_strategy.py)
+- 当前推荐参数: [financial_report_catalyst_best.json](/Users/lvxue/work/量化/configs/financial_report_catalyst_best.json)
+- 类型：财报催化 + 业绩质量 + 低位估值 + 市场确认四因子策略
+- 线上槽位：`holder_increase_screening`，替换原 `星曜增持臻选`
+- 核心逻辑：
+  - 使用 `disclosure_date` 找未来 45 天内临近披露或最近 7 天刚披露财报的公司
+  - 使用 `forecast / express / fina_indicator` 过滤预减、亏损、低质量业绩，优先净利润、扣非、营收、ROE、毛利率、现金流共同确认
+  - 使用 `daily / daily_basic` 过滤高价、高估值、高位追涨和流动性不足，低价只作为加分，不允许低价垃圾股混入
+  - 每天只导出综合评分最高的 1 只，并保持与 `strategy-lab` 现有导入 payload 兼容
+
+### 2. 星曜增持臻选（历史研究保留）
 
 - runner: [run_tushare_holder_strategy.py](/Users/lvxue/work/量化/scripts/run_tushare_holder_strategy.py)
 - 纯模块: [holder_strategy_core.py](/Users/lvxue/work/量化/scripts/holder_strategy_core.py)
@@ -158,7 +185,7 @@
   - 如果某一天因为 `daily / fina_indicator / adj_factor / stk_factor_pro` 抖动导致只跑完一部分，下一次会只补没完成的股票，不会整天重来
   - 旧的完整导出仍兼容，缺少 `stage1_complete / stage2_complete` 字段时会默认视作已完成，不会把老结果误判成残缺
 
-### 2. 龙门双阶强势臻选
+### 3. 龙门双阶强势臻选
 
 - runner: [run_tushare_limitup_l1l2_strategy.py](/Users/lvxue/work/量化/scripts/run_tushare_limitup_l1l2_strategy.py)
 - 形态模块: [limitup_l1l2_strategy.py](/Users/lvxue/work/量化/scripts/limitup_l1l2_strategy.py)
@@ -239,10 +266,11 @@
 - Top-1 研究回放: [run_event_conviction_top1_research.py](/Users/lvxue/work/量化/scripts/run_event_conviction_top1_research.py)
 - 基线配置: [event_conviction_research_baseline.json](/Users/lvxue/work/量化/configs/event_conviction_research_baseline.json)
 - 类型：多事件统一评分母策略
-- 当前状态：已落地研究骨架和单日 runner，尚未接网页与线上调度
+- 当前状态：已接入网页展示与 Mac mini 晚间 `22:45` 定时推送链路
 - 当前方向：
   - 不只做“高管增持”
   - 允许候选池很大，统一打分后每天只取 Top-1
+  - 最终发布出口按 `total_score` 排序直接取最高分，`min_publish_score` 仅保留为配置快照参考，不再作为硬发布门槛
   - 当前首批事件源：
     - `management_buy`
     - `important_shareholder_buy`
@@ -258,6 +286,21 @@
     - `10日均值 +5.3594%`
     - 重复信号痕迹 `0`
   - 当前下一步不是放宽入口，而是继续优化 `final` 的中期表现
+
+### 8. 尾盘反抽臻选
+
+- vendored 项目: [vendor/tushare-stock-rater](vendor/tushare-stock-rater)
+- Mac mini bridge: [ops/run_mac_mini_rebound_pipeline.py](ops/run_mac_mini_rebound_pipeline.py)
+- shell 入口: [ops/run_mac_mini_rebound_pipeline.sh](ops/run_mac_mini_rebound_pipeline.sh)
+- launchd 安装: [ops/install_launchd_rebound_pipeline.sh](ops/install_launchd_rebound_pipeline.sh)
+- 类型：尾盘低吸 / 次日反抽候选策略
+- 当前状态：作为 `tail_rebound_screening` 接入展示站，默认工作日 `14:30` 由 Mac mini 执行并推送
+- 执行链路：
+  - 调用 `python3 -m tushare_stock_rater pick-rebound --top 5`
+  - 读取 `output/rebound_reports/rebound_YYYYMMDD_*/summary.json`
+  - 转换为 `strategy-lab` 导入 payload
+  - 调用 `POST /api/internal/strategies/tail_rebound_screening/imports` 推送到展示站
+- 这条策略的实时跟踪刷新也纳入 `TRACKING_STRATEGY_IDS` 默认列表。
 
 ## 独立研究框架
 

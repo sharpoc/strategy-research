@@ -603,10 +603,7 @@ def score_candidates(candidate_df: pd.DataFrame, config: EventConvictionConfig) 
 def select_top1_candidate(scored_df: pd.DataFrame, config: EventConvictionConfig) -> pd.DataFrame:
     if scored_df.empty:
         return scored_df.head(0)
-    best = scored_df.head(1).copy()
-    if _to_number(best.iloc[0].get("total_score"), 0.0) < config.min_publish_score:
-        return scored_df.head(0)
-    return best
+    return scored_df.head(1).copy()
 
 
 def build_screen_summary(
@@ -626,6 +623,8 @@ def build_screen_summary(
         "candidate_rows": int(len(candidate_df)),
         "candidate_unique_stock_count": int(candidate_df["ts_code"].astype(str).nunique()) if not candidate_df.empty else 0,
         "event_type_counts": {str(k): int(v) for k, v in event_counts.items()},
+        "selection_mode": "score_rank_top1",
+        "min_publish_score": float(config.min_publish_score),
         "top1_rows": int(len(top1_df)),
         "best_pick_ts_code": str(top1_df.iloc[0]["ts_code"]) if not top1_df.empty else None,
         "best_pick_name": str(top1_df.iloc[0]["name"]) if not top1_df.empty else None,

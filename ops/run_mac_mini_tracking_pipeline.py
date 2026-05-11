@@ -29,6 +29,7 @@ DEFAULT_STRATEGY_IDS = (
     "holder_increase_screening",
     "holder_chip_enhanced_screening",
     "event_conviction_signal",
+    "tail_rebound_screening",
 )
 TOKEN_HEADER = "X-Strategy-Lab-Token"
 

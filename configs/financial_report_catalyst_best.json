@@ -1,0 +1,19 @@
+{
+  "report_lookahead_days": 45,
+  "recent_confirmed_days": 7,
+  "forecast_lookback_days": 180,
+  "history_trade_days": 60,
+  "price_min": 3.0,
+  "price_max": 35.0,
+  "min_amount": 40000.0,
+  "min_turnover_rate": 0.45,
+  "max_pe_ttm": 60.0,
+  "max_pb": 6.0,
+  "max_ps_ttm": 8.0,
+  "max_position_60d": 0.82,
+  "min_return_20d": -12.0,
+  "min_profit_yoy": 12.0,
+  "min_roe": 5.0,
+  "max_fina_candidates": 350,
+  "api_sleep_sec": 0.05
+}

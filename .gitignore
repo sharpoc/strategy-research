@@ -12,6 +12,7 @@ Library/
 
 # Runtime exports and market data
 output/
+vendor/tushare-stock-rater/data/cache/
 
 # Logs and temp
 *.log

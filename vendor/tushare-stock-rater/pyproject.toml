@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tushare-stock-rater"
+version = "0.1.0"
+description = "Tushare-only single-stock buy rating and report generator."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "PyYAML>=6.0",
+  "tushare>=1.4",
+]
+
+[project.scripts]
+tushare-stock-rater = "tushare_stock_rater.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+tushare_stock_rater = ["py.typed"]

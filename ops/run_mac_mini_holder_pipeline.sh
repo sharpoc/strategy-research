@@ -147,11 +147,22 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 TRADE_DATE="${TRADE_DATE:-$(TZ=Asia/Shanghai date '+%Y%m%d')}"
 
 RUN_ARGS=(
-  "scripts/run_tushare_holder_strategy_core.py"
+  "scripts/run_tushare_financial_report_catalyst_strategy.py"
   "--end-date" "$TRADE_DATE"
-  "--resume-existing"
-  "--require-complete"
 )
+
+TARGET_STRATEGY_ID="${APP_INTERNAL_API_STRATEGY_ID:-holder_increase_screening}"
+if [[ "$TARGET_STRATEGY_ID" == "holder_chip_enhanced_screening" ]]; then
+  RUN_ARGS=(
+    "scripts/run_tushare_holder_strategy_core.py"
+    "--end-date" "$TRADE_DATE"
+    "--resume-existing"
+    "--require-complete"
+  )
+else
+  HOLDER_CONFIG_FILE="${HOLDER_CONFIG_FILE:-configs/financial_report_catalyst_best.json}"
+  HOLDER_EXPORT_PREFIX="${HOLDER_EXPORT_PREFIX:-financial_report_catalyst_}"
+fi
 
 if [[ -n "${HOLDER_CONFIG_FILE:-}" ]]; then
   CONFIG_PATH="$HOLDER_CONFIG_FILE"
