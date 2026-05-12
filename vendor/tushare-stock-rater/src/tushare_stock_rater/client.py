@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import socket
 import time
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,7 @@ class TushareClient:
         if not self.token or self.token.startswith("PASTE_"):
             raise TushareClientError("Missing TUSHARE_TOKEN. 请在环境变量或 .env 中配置。")
 
+        self.http_timeout_seconds = _configure_socket_timeout()
         self.cache_dir = Path(cache_dir or PROJECT_ROOT / "data" / "cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.retries = retries
@@ -88,6 +90,7 @@ class TushareClient:
         if should_use_cache and cache_path.exists():
             try:
                 df = pd.read_csv(cache_path, dtype=str, keep_default_na=False)
+                print(f"[tushare] cache {table_label} rows={len(df)} path={cache_path.name}", flush=True)
                 return df, TableMeta(endpoint=table_label, row_count=len(df), cached=True, params=clean_params)
             except Exception:
                 pass
@@ -104,6 +107,11 @@ class TushareClient:
 
         last_error: Exception | None = None
         for attempt in range(self.retries + 1):
+            started_at = time.monotonic()
+            print(
+                f"[tushare] call {table_label} endpoint={endpoint} attempt={attempt + 1}/{self.retries + 1} params={clean_params}",
+                flush=True,
+            )
             try:
                 df = fn(**clean_params)
                 if df is None:
@@ -115,9 +123,13 @@ class TushareClient:
                 if should_use_cache:
                     cache_path.parent.mkdir(parents=True, exist_ok=True)
                     df.to_csv(cache_path, index=False)
+                elapsed = time.monotonic() - started_at
+                print(f"[tushare] ok {table_label} rows={len(df)} elapsed={elapsed:.1f}s", flush=True)
                 return df, TableMeta(endpoint=table_label, row_count=len(df), cached=False, params=clean_params)
             except Exception as exc:
                 last_error = exc
+                elapsed = time.monotonic() - started_at
+                print(f"[tushare] error {table_label} elapsed={elapsed:.1f}s error={exc}", flush=True)
                 if attempt < self.retries:
                     time.sleep(0.8 * (attempt + 1))
 
@@ -150,3 +162,14 @@ class TushareClient:
         if trade_cal.empty or stock_basic.empty:
             raise TushareClientError("Tushare smoke test failed. trade_cal 或 stock_basic 返回为空。")
         return metas
+
+
+def _configure_socket_timeout() -> float:
+    raw = os.getenv("TUSHARE_HTTP_TIMEOUT_SECONDS", "45").strip()
+    try:
+        timeout = float(raw)
+    except ValueError:
+        timeout = 45.0
+    if timeout > 0:
+        socket.setdefaulttimeout(timeout)
+    return timeout
