@@ -75,6 +75,13 @@
 
 ## 当前已落地的 Mac mini 入口
 
+> **⚠️ 调度状态（2026-06-04 起）：以下 5 个 launchd 定时任务已全部停用。**
+> 原因：这 4 条策略（财报催化/股东户数、筹码增强、事件信念、尾盘反抽）已在展示站前台隐藏（首页不露、`/strategies` 返回 404），盘后/盘中跑批产出的数据已无前台消费，故停用以省 tushare 频率与机器资源。
+> - 停用清单（Mac mini，`~/Library/LaunchAgents/`，工作日）：`tracking.pipeline`(09:40–15:10×9)、`rebound.pipeline`(14:30)、`holder.pipeline`(21:30)、`holder-chip.pipeline`(22:15)、`event-conviction.pipeline`(22:45)。
+> - 停用方式（可逆）：`launchctl bootout` + 对应 `com.sharpoc.strategyresearch.*.plist` 改名为 `.plist.disabled`，脚本与 plist 内容均未改动。
+> - 恢复：把 `.plist.disabled` 改回 `.plist`，再 `launchctl bootstrap gui/$(id -u) <plist>`（或重跑各 `ops/install_launchd_*_pipeline.sh`）。
+> - 不受影响：strategy-lab 的 `market-reports`(20:30) 与 `auction-top3-notify`(09:24) 仍在跑，喂线上 `/limit-up`、`/top3-review`。
+
 为了让这台机器先接管定时执行，仓库内现在补了这几个入口：
 
 - `.env.mac_mini.example`
